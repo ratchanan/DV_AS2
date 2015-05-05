@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+	<h2 align="left">แนวโน้มของผู้ป่วยโรคจิตเวช ปี 2549 - 2553</h2>
+</head>
+<style>
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis {
+  font: 12px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+</style>
+<body>
+<script src="https://cdn.rawgit.com/mbostock/d3/master/d3.min.js" charset="utf-8"></script>
+<script>
+
+var margin = {top: 20, right: 20, bottom: 30, left: 100},
+    width = 400 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	var data = [
+  {Year: "2549", Percentage: 223.46},
+  {Year: "2550", Percentage: 241.99},
+  {Year: "2551", Percentage: 245.37},
+  {Year: "2552", Percentage: 265.38},
+  {Year: "2553", Percentage: 302.89}
+];
+	
+  x.domain(data.map(function(d) { return d.Year; }));
+  y.domain([0, d3.max(data, function(d) { return d.Percentage; })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(0)")
+      .attr("y", 6)
+      .attr("dy", ".35em")
+      .style("text-anchor", "start")
+      .text("อัตราต่อประชากร 100,000 คน");
+
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.Year); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.Percentage); })
+      .attr("height", function(d) { return height - y(d.Percentage); })
+	  .attr("fill", function(d, e) {
+					return "rgb(" + (60 +(e * 50)) + ", 0, 0)"; });
+
+
+function type(d) {
+  d.Percentage = +d.Percentage;
+  return d;
+}
+
+</script>
